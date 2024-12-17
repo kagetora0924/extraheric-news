@@ -1,0 +1,28 @@
+{
+  "name": "extraheric-news",
+  "version": "1.0.0",
+  "description": "* .envファイルはgitで管理していないので手元で作成する。extraheric-news直下に作成する * .envにOPENAI_API_KEY=sk-...Aという形でOpenAI APIキーを記載する",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kagetora0924/extraheric-news.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kagetora0924/extraheric-news/issues"
+  },
+  "homepage": "https://github.com/kagetora0924/extraheric-news#readme",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
