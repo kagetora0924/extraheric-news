@@ -6,13 +6,9 @@ async function fetchArticle() {
     }
 
     try {
-        // サーバーへURLを送信してHTMLを取得
-        const response = await fetch(`/api/fetch-html?url=${encodeURIComponent(url)}`);
-        const html = await response.text(); // HTMLをテキストとして取得
-
-        // iframeにHTMLをそのまま表示
+        // iframeを作成し、srcにURLを設定する
         const iframe = document.createElement('iframe');
-        iframe.srcdoc = html; // 直接HTMLを埋め込む
+        iframe.src = url; // 直接URLを指定
         iframe.style.width = '100%';
         iframe.style.height = '600px';
         iframe.style.border = 'none';
@@ -22,7 +18,7 @@ async function fetchArticle() {
         container.innerHTML = ''; // 既存の内容をクリア
         container.appendChild(iframe);
     } catch (error) {
-        console.error('Error fetching HTML:', error);
+        console.error('Error displaying page:', error);
         alert('エラーが発生しました。');
     }
 }
