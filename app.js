@@ -47,15 +47,16 @@ app.post('/api/analyze-text', async (req, res) => {
     try {
         const prompt = `
         以下の文章には、他のスタンスも存在するかもしれない部分や、プロパガンダの恐れがある表現が含まれているかもしれません。
-        その箇所を特定し、理由を簡潔に説明してください。
+        その箇所を特定し、他にどんな見方がありそうかを、意見ごとに改行で分けて記してください。
+        やや強引でも、反対意見やより慎重な見方など、各引用箇所に対して必ず複数の意見を提案してください。
         また、タイトルや他の記事のタイトルではなく、本文と思われる部分だけを探索対象としてください。
         textは、元の文章を正確に引用し、改行や余計な記号、句点を絶対に付加しないでください。
 
         ### 文章:
         ${content}
 
-        ### 回答フォーマット:
-        [{"text": "該当部分のテキスト", "reason": "その理由"}]
+        ### 回答フォーマット(Should STRICTLY be JSON-style string. do not add any extra strings):
+        [{"text": "該当部分のテキスト", "reason": "さまざまな見方"}]
         `;
         console.log("Sending request to GPT API");
 
@@ -71,9 +72,25 @@ app.post('/api/analyze-text', async (req, res) => {
         });
 
         console.log("Received response from GPT API");
+        console.log(gptResponse.data.choices[0].message.content);
+    
+        // バックティックと 'json' プレフィックスを削除
+        let cleanedContent = gptResponse.data.choices[0].message.content
+        .replace(/```json\s*/, '') // 開始のコードブロックと 'json' を削除
+        .replace(/```$/, '')        // 終了のコードブロックを削除
+        .trim();                     // 前後の空白を削除
 
-        const highlights = JSON.parse(gptResponse.data.choices[0].message.content);
+        // JSONの開始位置を確認し、それ以前を削除
+        const jsonStart = cleanedContent.indexOf('[');
+        if (jsonStart !== -1) {
+        cleanedContent = cleanedContent.substring(jsonStart);
+        }
 
+        console.log("Cleaned content:", cleanedContent);
+
+        // JSON パース
+        const highlights = JSON.parse(cleanedContent);
+        console.log("Parsed highlights:", highlights);
         res.json({ highlights });
     } catch (err) {
         console.error('Error calling GPT API:', err.message);
